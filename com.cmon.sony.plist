@@ -18,9 +18,9 @@
     <true/>
 
     <key>StandardOutPath</key>
-    <string>/Users/yatharth/.cmon-sony.log</string>
+    <string>/tmp/cmon-sony.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/yatharth/.cmon-sony-error.log</string>
+    <string>/tmp/cmon-sony.log</string>
 </dict>
 </plist>

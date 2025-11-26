@@ -13,10 +13,7 @@ import os
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.expanduser('~/.cmon-sony.log')),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler('/tmp/cmon-sony.log')]
 )
 logger = logging.getLogger(__name__)
 
