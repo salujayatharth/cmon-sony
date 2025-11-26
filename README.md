@@ -19,7 +19,7 @@ Works via AVRCP (Bluetooth media controls) using macOS MediaPlayer framework.
 ## Installation
 
 ```bash
-git clone https://github.com/yatharth/cmon-sony.git
+git clone https://github.com/salujayatharth/cmon-sony.git
 cd cmon-sony
 ./setup.sh
 ```
