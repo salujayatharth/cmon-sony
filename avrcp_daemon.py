@@ -2,7 +2,7 @@
 """
 Sony WH1000XM5 AVRCP Mute Control Daemon
 Listens for play/pause and toggles system audio mute + Zoom mute.
-Background only - no UI.
+Menu bar app with status indicator.
 """
 
 import logging
@@ -17,11 +17,28 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-from AppKit import NSApplication
+from AppKit import (
+    NSApplication, NSStatusBar, NSMenu, NSMenuItem,
+    NSVariableStatusItemLength, NSApplicationActivationPolicyAccessory,
+    NSObject
+)
 from PyObjCTools import AppHelper
 import MediaPlayer
 
 is_muted = False
+status_item = None
+
+
+class AppDelegate(NSObject):
+    def quit_(self, sender):
+        logger.info("Quitting")
+        AppHelper.stopEventLoop()
+
+
+def update_status_icon():
+    global status_item, is_muted
+    if status_item:
+        status_item.button().setTitle_("🔇" if is_muted else "🔊")
 
 
 def toggle_mute():
@@ -36,6 +53,8 @@ def toggle_mute():
         logger.info("UNMUTING")
         subprocess.run(["osascript", "-e", "set volume output muted false"], capture_output=True)
         unmute_zoom()
+
+    update_status_icon()
 
 
 def mute_zoom():
@@ -114,10 +133,35 @@ def setup_media_commands():
     logger.info("Media handlers registered")
 
 
+def setup_menu_bar(delegate):
+    global status_item
+
+    status_item = NSStatusBar.systemStatusBar().statusItemWithLength_(
+        NSVariableStatusItemLength
+    )
+    status_item.button().setTitle_("🔊")
+
+    menu = NSMenu.alloc().init()
+    quit_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+        "Quit", "quit:", "q"
+    )
+    quit_item.setTarget_(delegate)
+    menu.addItem_(quit_item)
+
+    status_item.setMenu_(menu)
+    logger.info("Menu bar icon created")
+
+
 def main():
     logger.info("Starting cmon-sony daemon")
 
-    NSApplication.sharedApplication()
+    app = NSApplication.sharedApplication()
+    app.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
+
+    delegate = AppDelegate.alloc().init()
+    app.setDelegate_(delegate)
+
+    setup_menu_bar(delegate)
     setup_media_commands()
 
     logger.info("Listening for play/pause...")
