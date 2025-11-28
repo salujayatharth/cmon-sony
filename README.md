@@ -18,16 +18,23 @@ Works via AVRCP (Bluetooth media controls) using macOS MediaPlayer framework.
 
 ## Installation
 
+### Homebrew (recommended)
+
+```bash
+brew tap salujayatharth/tap
+brew install cmon-sony
+brew services start cmon-sony
+```
+
+### Manual
+
 ```bash
 git clone https://github.com/salujayatharth/cmon-sony.git
 cd cmon-sony
 ./setup.sh
 ```
 
-The setup script will:
-1. Install Python dependencies
-2. Copy the launchd plist to `~/Library/LaunchAgents/`
-3. Start the daemon
+The setup script will install Python dependencies and configure the launchd service.
 
 ## Permissions
 
@@ -40,26 +47,33 @@ Just press play/pause on your Sony headphones. The daemon toggles mute state on 
 
 ## Commands
 
+### Homebrew install
+
 ```bash
-# View logs
-tail -f /tmp/cmon-sony.log
+brew services start cmon-sony   # Start
+brew services stop cmon-sony    # Stop
+brew services restart cmon-sony # Restart
+tail -f /opt/homebrew/var/log/cmon-sony.log  # View logs
+```
 
-# Stop daemon
-launchctl unload ~/Library/LaunchAgents/com.cmon.sony.plist
+### Manual install
 
-# Start daemon
-launchctl load ~/Library/LaunchAgents/com.cmon.sony.plist
-
-# Restart daemon
-launchctl unload ~/Library/LaunchAgents/com.cmon.sony.plist && \
-launchctl load ~/Library/LaunchAgents/com.cmon.sony.plist
-
-# Check status
-launchctl list | grep cmon
+```bash
+tail -f /tmp/cmon-sony.log  # View logs
+launchctl unload ~/Library/LaunchAgents/com.cmon.sony.plist  # Stop
+launchctl load ~/Library/LaunchAgents/com.cmon.sony.plist    # Start
+launchctl list | grep cmon  # Check status
 ```
 
 ## Uninstall
 
+### Homebrew
+```bash
+brew services stop cmon-sony
+brew uninstall cmon-sony
+```
+
+### Manual
 ```bash
 launchctl unload ~/Library/LaunchAgents/com.cmon.sony.plist
 rm ~/Library/LaunchAgents/com.cmon.sony.plist
