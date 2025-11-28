@@ -1,12 +1,12 @@
 # cmon-sony
 
-A macOS background daemon that turns your Sony WH-1000XM5 headphones' play/pause button into a universal mute toggle.
+A macOS menu bar app that turns your Sony WH-1000XM5 headphones' play/pause button into a universal mic mute toggle.
 
 ## What it does
 
 Press play/pause on your Sony headphones to:
-- Toggle system audio mute
-- Toggle Zoom microphone mute (if in a meeting)
+- Toggle system microphone mute
+- Toggle Zoom mute (if in a meeting)
 
 Works via AVRCP (Bluetooth media controls) using macOS MediaPlayer framework.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Sony WH1000XM5 AVRCP Mute Control Daemon
-Listens for play/pause and toggles system audio mute + Zoom mute.
+Sony WH1000XM5 AVRCP Mic Mute Daemon
+Listens for play/pause and toggles microphone mute + Zoom mute.
 Menu bar app with status indicator.
 """
 
@@ -38,7 +38,8 @@ class AppDelegate(NSObject):
 def update_status_icon():
     global status_item, is_muted
     if status_item:
-        status_item.button().setTitle_("🔇" if is_muted else "🔊")
+        # 🔴 = muted (red = stop/muted), 🟢 = live/unmuted
+        status_item.button().setTitle_("🔴" if is_muted else "🟢")
 
 
 def toggle_mute():
@@ -46,12 +47,12 @@ def toggle_mute():
     is_muted = not is_muted
 
     if is_muted:
-        logger.info("MUTING")
-        subprocess.run(["osascript", "-e", "set volume output muted true"], capture_output=True)
+        logger.info("MUTING MIC")
+        subprocess.run(["osascript", "-e", "set volume input volume 0"], capture_output=True)
         mute_zoom()
     else:
-        logger.info("UNMUTING")
-        subprocess.run(["osascript", "-e", "set volume output muted false"], capture_output=True)
+        logger.info("UNMUTING MIC")
+        subprocess.run(["osascript", "-e", "set volume input volume 100"], capture_output=True)
         unmute_zoom()
 
     update_status_icon()
@@ -139,7 +140,7 @@ def setup_menu_bar(delegate):
     status_item = NSStatusBar.systemStatusBar().statusItemWithLength_(
         NSVariableStatusItemLength
     )
-    status_item.button().setTitle_("🔊")
+    status_item.button().setTitle_("🟢")
 
     menu = NSMenu.alloc().init()
     quit_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
